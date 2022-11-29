@@ -35,11 +35,6 @@
         </ion-select>
       </ion-item>
 
-      <ion-item>
-        <ion-select placeholder="Escuela" formControlName="clasif_esc">
-          <ion-select-option *ngFor="let esc of escuela">{{esc.escDuoc}}</ion-select-option>
-        </ion-select>
-      </ion-item>
 
       <ion-button type="submit" [disabled]="!asig.valid">Registrar asignatura</ion-button>
       <ion-button (click)="modificar()">Modificar</ion-button>

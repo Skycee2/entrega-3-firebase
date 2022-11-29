@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from 'src/app/services/api.service';
 import { AlertController } from '@ionic/angular';
+import { FirebaseService } from 'src/app/services/firebase.service';
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-apianime',
   templateUrl: './apianime.page.html',
@@ -13,7 +15,7 @@ export class ApianimePage implements OnInit {
   cant_personajes: number = 0;
   personajes : any[] = [];
 
-  constructor(private apiService: ApiService,private alertController: AlertController) { }
+  constructor(private router: Router,private database: FirebaseService,private apiService: ApiService,private alertController: AlertController) { }
 
   async ngOnInit() {
     await this.apiService.get();
@@ -31,12 +33,31 @@ export class ApianimePage implements OnInit {
 
   async presentAlert() {
     const alert = await this.alertController.create({
-      header: 'Cerraste sesión',
-      message: '',
-      buttons: ['OK'],
+      header: 'Estas seguro de salir?',
+      cssClass: '',
+      buttons: [
+        {
+          text: 'No',
+          cssClass: 'alert-button-cancel',
+          role: 'cancel',
+        },
+        {
+          text: 'Si',
+          cssClass: 'alert-button-confirm',
+          handler: () => {
+            this.logout()  ;
+          },
+        }
+      ],
     });
 
     await alert.present();
+
+  }
+
+  logout(){
+    this.database.logout();
+    this.router.navigateByUrl('/login')
   }
 
 }

@@ -4,6 +4,8 @@ import { LoadingController } from '@ionic/angular';
 import { Usuario } from 'src/app/interfaces/models';
 import { UsuarioService } from 'src/app/services/usuario.service';
 import { AlertController } from '@ionic/angular';
+import { FirebaseService } from 'src/app/services/firebase.service';
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-admin-clases',
   templateUrl: './admin-clases.page.html',
@@ -54,7 +56,6 @@ export class AdminClasesPage implements OnInit {
     nom_asig: new FormControl('',[Validators.required, Validators.minLength(6)]),
     sigla_asig: new FormControl('',[Validators.required, Validators.pattern('[A-Z]{1,3}[0-9]{1,5}')]), 
     prof_asignatura: new FormControl('', [Validators.required]),
-    clasif_esc: new FormControl('this.escuela')
   });
 
   asignaturas: any[] = [];
@@ -65,20 +66,38 @@ export class AdminClasesPage implements OnInit {
   //Variables validaciones
   valid_cod: string;
   
-
-  constructor(private alertController: AlertController,/* private usuarioService: UsuarioService */ private loadingController: LoadingController) { }
+  constructor(private router: Router,private database: FirebaseService,private alertController: AlertController,/* private usuarioService: UsuarioService */ private loadingController: LoadingController) { }
 
   ngOnInit() { 
   }
 
   async presentAlert() {
     const alert = await this.alertController.create({
-      header: 'Cerraste sesión',
-      message: '',
-      buttons: ['OK'],
+      header: 'Estas seguro de salir?',
+      cssClass: '',
+      buttons: [
+        {
+          text: 'No',
+          cssClass: 'alert-button-cancel',
+          role: 'cancel',
+        },
+        {
+          text: 'Si',
+          cssClass: 'alert-button-confirm',
+          handler: () => {
+            this.logout()  ;
+          },
+        }
+      ],
     });
 
     await alert.present();
+
+  }
+
+  logout(){
+    this.database.logout();
+    this.router.navigateByUrl('/login')
   }
   /* async ngOnInit() {
     await this.cargarAsignaturas();

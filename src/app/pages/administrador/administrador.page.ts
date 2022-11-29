@@ -4,6 +4,8 @@ import { UsuarioService } from 'src/app/services/usuario.service';
 import { LoadingController } from '@ionic/angular';
 import { ValidacionesService } from 'src/app/services/validaciones.service';
 import { AlertController } from '@ionic/angular';
+import { FirebaseService } from 'src/app/services/firebase.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-administrador',
@@ -41,19 +43,38 @@ export class AdministradorPage implements OnInit {
   /* KEY_USUARIOS = 'usuarios'; */
 
 
-  constructor(private alertController: AlertController,/* private usuarioService: UsuarioService */ private validacionesService: ValidacionesService, private loadingController: LoadingController) { }
+  constructor(private router: Router,private database: FirebaseService,private alertController: AlertController,/* private usuarioService: UsuarioService */ private validacionesService: ValidacionesService, private loadingController: LoadingController) { }
 
   ngOnInit() {
     
   }
   async presentAlert() {
     const alert = await this.alertController.create({
-      header: 'Cerraste sesión',
-      message: '',
-      buttons: ['OK'],
+      header: 'Estas seguro de salir?',
+      cssClass: '',
+      buttons: [
+        {
+          text: 'No',
+          cssClass: 'alert-button-cancel',
+          role: 'cancel',
+        },
+        {
+          text: 'Si',
+          cssClass: 'alert-button-confirm',
+          handler: () => {
+            this.logout()  ;
+          },
+        }
+      ],
     });
 
     await alert.present();
+
+  }
+
+  logout(){
+    this.database.logout();
+    this.router.navigateByUrl('/login')
   }
 
   /* async ngOnInit() {

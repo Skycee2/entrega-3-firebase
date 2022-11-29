@@ -32,23 +32,22 @@ export class RegistrarPage implements OnInit {
   /* usuarios: any[] = []; */
   /* KEY_USUARIOS = 'usuarios'; */
 
-  constructor(private database: FirebaseService, private router: Router, private validacionesService: ValidacionesService,private alertController: AlertController) { }
+  constructor(private database: FirebaseService, private router: Router, private validacionesService: ValidacionesService, private alertController: AlertController) { }
 
   ngOnInit() {
   }
 
   registrar() {
     if (!this.validacionesService.validarRut(this.usuario.controls.rut.value)) {
-      alert('Rut inválido.');
-      return;
+      return this.presentAlert('Rut invalido!');
     }
     if (this.usuario.controls.contrasena.value != this.verificar_password) {
-      alert('CONTRASEÑAS NO COINCIDEN!');
-      return;
+
+      return this.presentAlert('CONTRASEÑAS NO COINCIDEN!');
     }
     if (!this.validacionesService.calcEdadReturn(17, this.usuario.controls.fecha_nac.value)) {
       alert('Edad mínima 17 años.');
-      return;
+      return this.presentAlert('Edad mínima 17 años.');
     }
     this.database.registrar(this.usuario.value.correo, this.usuario.value.contrasena).then(
       (res) => {
@@ -56,9 +55,9 @@ export class RegistrarPage implements OnInit {
         let setTipo = '';
         if (dominio === 'profesor.duoc.cl') {
           setTipo = 'profesor'
-        } else if(dominio === 'duocuc.cl') {
+        } else if (dominio === 'duocuc.cl') {
           setTipo = 'alumno'
-        }else{
+        } else {
           setTipo = 'administrador'
         }
 
@@ -73,13 +72,11 @@ export class RegistrarPage implements OnInit {
         }
         this.database.createDocumento(usuarioTemp, 'usuarios', res.uid).then(
           (res) => {
+            this.presentAlert('Resgistrado correctamente!')
             this.router.navigateByUrl('/login')
           }
         )
       },
-      (error) => {
-        console.log(' error')
-      }
     )
 
   }
@@ -88,9 +85,9 @@ export class RegistrarPage implements OnInit {
     return correo.slice(index + 1, correo.length)
   }
 
-  async presentAlert() {
+  async presentAlert(mensaje) {
     const alert = await this.alertController.create({
-      header: '¡Usuario registrado!',
+      header: mensaje,
       subHeader: '',
       buttons: ['OK'],
     });

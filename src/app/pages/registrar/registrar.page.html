@@ -2,8 +2,8 @@
   <form [formGroup]="usuario" (ngSubmit)="registrar()">
     <div class="fondo">
       <ion-card>
-        <img src="../../../assets/imagen/2560px-Logo_DuocUC.svg.png" alt="" width="200px">
-        <img src="../../../assets/imagen/registrar-icon.png" alt="" width="100px">
+        <img src="../../../assets/imagen/2560px-Logo_DuocUC.svg.png" alt="" width="150px">
+        <img src="../../../assets/imagen/registrar-icon.png" alt="" width="90px">
 
         <ion-item>
           <ion-label color="dark" position="stacked">Rut:</ion-label>
@@ -41,7 +41,7 @@
             [ngModelOptions]="{standalone: 'true'}"></ion-input>
         </ion-item>
 
-        <ion-button  expand="full" color="warning" shape="round" type="submit" (click)="presentAlert()"><ion-icon name="person-add-outline" slot="end"></ion-icon>Registrar</ion-button>
+        <ion-button  expand="full" color="warning" shape="round" type="submit" ><ion-icon name="person-add-outline" slot="end"></ion-icon>Registrar</ion-button>
         <ion-button routerLink="/login" expand="block" shape="round" class="ion-margin-top">
           <ion-icon name="home" slot="end"></ion-icon>
           Volver

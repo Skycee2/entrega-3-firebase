@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { UsuarioService } from 'src/app/services/usuario.service';
 import { Usuario } from 'src/app/interfaces/models';
 import { FirebaseService } from 'src/app/services/firebase.service';
@@ -33,9 +33,11 @@ export class PerfilPage implements OnInit {
   geoPointUbicacion: { lat: any; lng: any };
 
 
-  constructor(private database: FirebaseService, private activatedRoute: ActivatedRoute, private alertController: AlertController/*  private usuarioService: UsuarioService */) { }
 
-  
+
+  constructor(private router: Router,private database: FirebaseService, private activatedRoute: ActivatedRoute, private alertController: AlertController/*  private usuarioService: UsuarioService */) { }
+
+
   async ngOnInit() {
     this.getUsuario();
   }
@@ -54,13 +56,34 @@ export class PerfilPage implements OnInit {
 
   async presentAlert() {
     const alert = await this.alertController.create({
-      header: 'Cerraste sesión',
-      message: '',
-      buttons: ['OK'],
+      header: 'Estas seguro de salir?',
+      cssClass: '',
+      buttons: [
+        {
+          text: 'No',
+          cssClass: 'alert-button-cancel',
+          role: 'cancel',
+        },
+        {
+          text: 'Si',
+          cssClass: 'alert-button-confirm',
+          handler: () => {
+            this.logout()  ;
+          },
+        }
+      ],
     });
 
     await alert.present();
+
   }
+
+  logout(){
+    this.database.logout();
+    this.router.navigateByUrl('/login')
+  }
+
+
 
 
 
