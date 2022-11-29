@@ -1,0 +1,26 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title slot="start" class="titulo-admin ">Generar QR</ion-title>
+    <ion-button color="warning" slot="end" (click)="presentAlert()" routerLink="/login">
+      
+      <ion-icon name="log-out-outline"></ion-icon>
+    </ion-button>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="fondo-alumno">
+    <ion-card>
+      <img src="../../../assets/imagen/2560px-Logo_DuocUC.svg.png" alt="" width="500px">
+      <img style="margin-bottom: 5%;" src="../../../assets/imagen/profesor.png" alt="" width="200">
+
+      <ngx-qrcode [elementType]="elementType"  [value]="value"></ngx-qrcode>
+      <ion-input placeholder="" color="black" [(ngModel)]="value" disabled="true"></ion-input>
+      <ion-button class="qrboton" color="warning" expand="full" shape="round" (click)="generarQR()">
+        <ion-icon slot="end" name="qr-code-outline"></ion-icon>
+        Generar código QR
+      </ion-button>
+
+    </ion-card>
+  </div>
+</ion-content>

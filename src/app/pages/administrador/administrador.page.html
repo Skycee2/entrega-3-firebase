@@ -1,0 +1,86 @@
+<ion-header>
+  <ion-toolbar class="toolbar" >
+    <ion-title slot="start" >Administrador</ion-title>
+    <ion-button color="warning" slot="end" (click)="presentAlert()" routerLink="/login"><ion-icon name="log-out-outline"></ion-icon></ion-button>
+  </ion-toolbar>
+</ion-header>
+<ion-card-header>
+  Administrar usuario
+</ion-card-header>
+
+
+<ion-content [fullscreen]="true">
+  <div class="fondo">
+
+    <form [formGroup]="usuario" (ngSubmit)="registrar()">
+      <p></p>
+      <ion-item>
+        <ion-label position="absolute">Rut:</ion-label>
+        <ion-input type="text" placeholder="Ingrese rut con puntos y guion" formControlName="rut"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="absolute">Nombre completo:</ion-label>
+        <ion-input type="text" placeholder="Ingrese nombre" formControlName="nom_completo"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="absolute">Correo institucional:</ion-label>
+        <ion-input type="text" placeholder="Ingrese correo" formControlName="correo"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="absolute">Fecha nacimiento:</ion-label>
+        <ion-input type="date" placeholder="Ingrese fecha nacimiento" formControlName="fecha_nac"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="absolute">Semestre:</ion-label>
+        <ion-input type="number" placeholder="Ingrese semestre" formControlName="semestre"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="absolute">Contraseña:</ion-label>
+        <ion-input type="password" placeholder="Ingrese contraseña" formControlName="password"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="absolute">Ingrese nuevamente Contraseña:</ion-label>
+        <ion-input type="password" placeholder="Ingrese nuevamente contraseña" [(ngModel)]="verificar_password"
+          [ngModelOptions]="{standalone: 'true'}"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-select placeholder="tipo de usuario" formControlName="tipo_usuario">
+          <ion-select-option *ngFor="let t of tipoUsuario">{{t.tipo_usu}}</ion-select-option>
+        </ion-select>
+      </ion-item>
+      <p></p>
+
+      <ion-button color="warning" type="submit" [disabled]="!usuario.valid">REGISTRAR</ion-button>
+      <ion-button color="primary" (click)="modificar()">MODIFICAR</ion-button>
+      <ion-button color="success" (click)="limpiar()">LIMPIAR</ion-button>
+    </form>
+
+    <ion-card-content>
+      <h1 class="color">Lista de usuarios</h1>
+      <div *ngIf="usuario.length != 0; else elseBlock">
+        <ion-list *ngFor="let usuario of usuarios">
+          <ion-card>
+            <ion-item>
+              <ion-card-header>
+                <ion-card-title>{{usuario.nom_completo}}</ion-card-title>
+                <ion-card-subtitle>{{usuario.rut}} - {{usuario.fecha_nac}} - {{usuario.semestre}} </ion-card-subtitle>
+              </ion-card-header>
+              <ion-button slot="end" color="warning" (click)="buscar(usuario.rut)">Buscar</ion-button>
+              <ion-button slot="end" color="danger" (click)="eliminar(usuario.rut)">Eliminar</ion-button>
+            </ion-item>
+            <ion-card-content>
+              {{usuario.tipo_usuario}}
+            </ion-card-content>
+          </ion-card>
+        </ion-list>
+      </div>
+    </ion-card-content>
+
+    <ng-template #elseBlock>
+      <p>No existen usuarios</p>
+    </ng-template>
+
+  </div>
+</ion-content>

@@ -1,0 +1,32 @@
+
+<ion-header>
+  <ion-toolbar>
+    <ion-title slot="start" class="titulo-admin ">Registrar asistencia</ion-title>
+    <ion-button color="warning" slot="end" (click)="presentAlert()" routerLink="/login"><ion-icon name="log-out-outline"></ion-icon></ion-button>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div  class="fondo-alumno">
+    <ion-card>
+      <img src="../../../assets/imagen/2560px-Logo_DuocUC.svg.png" alt="" width="500px">
+      <img src="../../../assets/imagen/379383_student_icon.png" alt="" width="200">
+
+      <ion-button color="warning"  expand="full" shape="round">
+        <ion-icon slot="end" name="camera-outline"></ion-icon>
+        Abrir cámara
+        
+      </ion-button>
+      <ion-item>
+        <ion-label> 
+        
+        </ion-label>
+        <ion-input type="text" placeholder="Ingrese el código QR "></ion-input>
+
+      </ion-item>
+      <ion-button expand="full" shape="round">
+        <ion-icon slot="end" name="save-outline"></ion-icon> Registrar asistencia</ion-button>
+
+    </ion-card>
+  </div>
+</ion-content>
