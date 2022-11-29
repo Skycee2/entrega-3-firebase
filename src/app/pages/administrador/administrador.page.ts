@@ -112,7 +112,7 @@ export class AdministradorPage implements OnInit {
     await alert.present();
   }
 
-/*   async eliminarAlert() {
+/*    async eliminarAlert() {
     const alert = await this.alertController.create({
       header: 'Estas seguro de salir?',
       cssClass: '',
@@ -126,11 +126,11 @@ export class AdministradorPage implements OnInit {
           text: 'Si',
           cssClass: 'alert-button-confirm',
           handler: () => {
-            this.eliminar( 'usuario',id);
+            this.database.eliminar('usuarios' );
           },
         }
       ],
-    });
+    }); 
 
     await alert.present();
 
