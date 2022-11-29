@@ -40,15 +40,105 @@ export class AdministradorPage implements OnInit {
   verificar_password: string;
   //VAMOS A CREAR UNA VARIABLE PARA OBTENER LA LISTA DE USUARIOS DEL SERVICIO DE USUARIOS:
   usuarios: any[] = [];
+  id_modificar: any = '';
   /* KEY_USUARIOS = 'usuarios'; */
 
 
   constructor(private router: Router,private database: FirebaseService,private alertController: AlertController,/* private usuarioService: UsuarioService */ private validacionesService: ValidacionesService, private loadingController: LoadingController) { }
 
-  ngOnInit() {
-    
+  ngOnInit(){
+    this.listar();
   }
-  async presentAlert() {
+
+  agregar(){
+    this.database.agregar('usuarios', this.usuario.value);
+    this.usuario.reset();
+  }
+
+  listar(){
+    this.database.getDatos('usuarios').subscribe(
+      data => {
+        this.usuarios = [];
+        for(let usuario of data){
+          console.log( usuario.payload.doc.data() );
+          let usu = usuario.payload.doc.data();
+          usu['id'] = usuario.payload.doc.id;
+          this.usuarios.push( usu );
+        }
+      }
+    );
+  }
+
+  eliminar(id){
+    this.database.eliminar('usuarios', id);
+  }
+
+  buscar(id){
+    this.database.getDato('usuarios', id).subscribe(
+      (response: any) => {
+        //console.log( response.data() );
+        this.usuario.setValue( response.data() );
+        this.id_modificar = response.id;
+      }
+    );
+  }
+
+  modificar(){
+    let usu = this.usuario.value;
+    this.database.modificar('usuarios', this.id_modificar, usu);
+    this.usuario.reset();
+    this.id_modificar = '';
+  }
+
+  //aler agregar
+  async agregarAlert(mensaje:string) {
+    const alert = await this.alertController.create({
+      header: mensaje,
+      message: '',
+      buttons: ['OK'],
+    });
+
+    await alert.present();
+  }
+
+  //alert modificar
+  async modificarAlert() {
+    const alert = await this.alertController.create({
+      header: 'Usuario Modificado',
+      message: '',
+      buttons: ['OK'],
+    });
+
+    await alert.present();
+  }
+
+/*   async eliminarAlert() {
+    const alert = await this.alertController.create({
+      header: 'Estas seguro de salir?',
+      cssClass: '',
+      buttons: [
+        {
+          text: 'No',
+          cssClass: 'alert-button-cancel',
+          role: 'cancel',
+        },
+        {
+          text: 'Si',
+          cssClass: 'alert-button-confirm',
+          handler: () => {
+            this.eliminar( 'usuario',id);
+          },
+        }
+      ],
+    });
+
+    await alert.present();
+
+  } */
+
+
+  //alert cerrar sesión
+  async logoutAlert() {
     const alert = await this.alertController.create({
       header: 'Estas seguro de salir?',
       cssClass: '',

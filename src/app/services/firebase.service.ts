@@ -121,6 +121,49 @@ export class FirebaseService {
     const aux: FireAuth = await this.auth.currentUser;
     return aux;
   }
+
+  //crud administrador
+  agregar(coleccion, value){
+    try {
+      this.database.collection(coleccion).add(value);
+      //this.fire.collection(coleccion).doc(id).set(value);
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  getDatos(coleccion){
+    try {
+      return this.database.collection(coleccion).snapshotChanges();
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  eliminar(coleccion, id){
+    try {
+      this.database.collection(coleccion).doc(id).delete();
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  getDato(coleccion, id){
+    try {
+      return this.database.collection(coleccion).doc(id).get();
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  modificar(coleccion, id, value){
+    try {
+      this.database.collection(coleccion).doc(id).set(value);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   
   
 }

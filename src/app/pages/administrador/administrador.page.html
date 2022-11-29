@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar class="toolbar" >
     <ion-title slot="start" >Administrador</ion-title>
-    <ion-button color="warning" slot="end" (click)="presentAlert()" routerLink="/login"><ion-icon name="log-out-outline"></ion-icon></ion-button>
+    <ion-button color="warning" slot="end" (click)="logoutAlert()"><ion-icon name="log-out-outline"></ion-icon></ion-button>
   </ion-toolbar>
 </ion-header>
 <ion-card-header>
@@ -12,7 +12,7 @@
 <ion-content [fullscreen]="true">
   <div class="fondo">
 
-    <form [formGroup]="usuario" (ngSubmit)="registrar()">
+    <form [formGroup]="usuario" (ngSubmit)="agregar()">
       <p></p>
       <ion-item>
         <ion-label position="absolute">Rut:</ion-label>
@@ -38,7 +38,7 @@
       </ion-item>
       <ion-item>
         <ion-label position="absolute">Contraseña:</ion-label>
-        <ion-input type="password" placeholder="Ingrese contraseña" formControlName="password"></ion-input>
+        <ion-input type="password" placeholder="Ingrese contraseña" formControlName="contrasena"></ion-input>
       </ion-item>
       <ion-item>
         <ion-label position="absolute">Ingrese nuevamente Contraseña:</ion-label>
@@ -52,8 +52,8 @@
       </ion-item>
       <p></p>
 
-      <ion-button color="warning" type="submit" [disabled]="!usuario.valid">REGISTRAR</ion-button>
-      <ion-button color="primary" (click)="modificar()">MODIFICAR</ion-button>
+      <ion-button [disabled]="!usuario.valid" (click)="agregarAlert()" type="submit" expand="full">Agregar</ion-button>
+      <ion-button (click)="modificarAlert()" [disabled]="!usuario.valid || id_modificar == ''" expand="full">Modificar</ion-button>
       <ion-button color="success" (click)="limpiar()">LIMPIAR</ion-button>
     </form>
 
