@@ -1,14 +1,27 @@
 <ion-header>
-  <ion-toolbar>
-    <ion-title>Página no encontrada</ion-title>
+  <ion-toolbar class="toolbar">
+    <ion-title>ERROR 404</ion-title>
+    <ion-button color="warning" slot="end" (click)="presentAlert()">
+      <ion-icon name="log-out-outline"></ion-icon>
+    </ion-button>
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding">
-  <img src="../../../assets/imagen/error404.svg" alt="">
+<ion-content>
+  <ion-list *ngFor="let personaje of personajes">
+    <ion-item>
+      <ion-avatar slot="">
+        <ion-img src="{{personaje.image}}"> </ion-img>
+      </ion-avatar>
+      <ion-label>
+        {{ personaje.name }} 
+      </ion-label>
+    </ion-item>
+  </ion-list>
+
   <ion-button routerLink="/login" expand="full" color="warning" class="ion-margin-top">
     <ion-icon name="home" slot="start"></ion-icon>
     Volver al inicio
   </ion-button>
-  
+
 </ion-content>

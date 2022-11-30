@@ -47,7 +47,7 @@ export class RegistrarPage implements OnInit {
     }
     if (!this.validacionesService.calcEdadReturn(17, this.usuario.controls.fecha_nac.value)) {
       alert('Edad mínima 17 años.');
-      return this.presentAlert('Edad mínima 17 años.');
+      return this.presentAlert('Debe ser mayor a 17 años!');
     }
     this.database.registrar(this.usuario.value.correo, this.usuario.value.contrasena).then(
       (res) => {
@@ -72,6 +72,7 @@ export class RegistrarPage implements OnInit {
         }
         this.database.createDocumento(usuarioTemp, 'usuarios', res.uid).then(
           (res) => {
+
             this.presentAlert('Resgistrado correctamente!')
             this.router.navigateByUrl('/login')
           }
@@ -85,7 +86,7 @@ export class RegistrarPage implements OnInit {
     return correo.slice(index + 1, correo.length)
   }
 
-  async presentAlert(mensaje) {
+  async presentAlert(mensaje:string) {
     const alert = await this.alertController.create({
       header: mensaje,
       subHeader: '',

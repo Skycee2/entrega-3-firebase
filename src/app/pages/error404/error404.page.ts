@@ -1,4 +1,10 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { AlertController } from '@ionic/angular';
+import { ApiService } from 'src/app/services/api.service';
+import { FirebaseService } from 'src/app/services/firebase.service';
+
+
 
 @Component({
   selector: 'app-error404',
@@ -6,10 +12,52 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./error404.page.scss'],
 })
 export class Error404Page implements OnInit {
+  cant_personajes: number = 0;
+  personajes: any[] = [];
 
-  constructor() { }
+  constructor(private router: Router, private database: FirebaseService, private apiService: ApiService, private alertController: AlertController) { }
 
-  ngOnInit() {
+  async ngOnInit() {
+    await this.apiService.getPersonaje();
+    //llamar al metodo que obtiene a todos los personajes:
+    let respuesta = await this.apiService.getPersonaje();
+
+    respuesta.subscribe((data: any) => {
+      console.log(data.info);
+
+      this.cant_personajes = data.info.count;
+      this.personajes = data.results;
+
+    });
+  }
+
+  async presentAlert() {
+    const alert = await this.alertController.create({
+      header: 'Estas seguro de salir?',
+      cssClass: '',
+      buttons: [
+        {
+          text: 'No',
+          cssClass: 'alert-button-cancel',
+          role: 'cancel',
+        },
+        {
+          text: 'Si',
+          cssClass: 'alert-button-confirm',
+          handler: () => {
+            this.logout()  ;
+          },
+        }
+      ],
+    });
+
+    await alert.present();
+
+  }
+
+  logout(){
+    this.database.logout();
+    this.router.navigateByUrl('/login')
   }
 
 }

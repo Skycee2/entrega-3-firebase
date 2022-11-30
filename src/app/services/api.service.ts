@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
 
+
 @Injectable({
   providedIn: 'root'
 })
@@ -14,6 +15,12 @@ export class ApiService {
 
   async get() {
     return await this.http.get('https://rickandmortyapi.com/api/character');
-}
+  }
+
+  async getPersonaje() {
+    return await this.http.get('https://rickandmortyapi.com/api/character');
+  }
+
+
 
 }

@@ -6,6 +6,8 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { AlertController } from '@ionic/angular';
 import { FirebaseService } from 'src/app/services/firebase.service';
 
+import { LoadingController } from '@ionic/angular';
+
 @Component({
   selector: 'app-login',
   templateUrl: './login.page.html',
@@ -23,14 +25,15 @@ export class LoginPage implements OnInit {
     contrasena: new FormControl('', [Validators.required, Validators.minLength(6), Validators.maxLength(18)]),
   });
 
-  constructor( private database: FirebaseService , private alertController: AlertController, private router: Router) { }
+  constructor(private cargandoPantalla: LoadingController, private database: FirebaseService , private alertController: AlertController, private router: Router) { }
 
   ngOnInit() {
   }
 
-   login() {
+    login() {
     this.database.login(this.usuario.value.correo, this.usuario.value.contrasena).then(
       (res) => {
+        this.loadingPantalla('cargando...');
         this.presentAlert('Ingresaste correctamente!')
         this.router.navigateByUrl('/tabs')
       },(error)=>{
@@ -48,6 +51,17 @@ export class LoginPage implements OnInit {
 
     await alert.present();
   }
+
+  async loadingPantalla(message){
+    const cargando = await this.cargandoPantalla.create({
+      message,
+      duration: 500,
+      spinner: 'lines-small'
+    });
+    cargando.present();
+  }
+
+
 
   
 

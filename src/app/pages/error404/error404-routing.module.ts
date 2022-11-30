@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-
+import { CommonModule } from '@angular/common';
 import { Error404Page } from './error404.page';
 
 const routes: Routes = [

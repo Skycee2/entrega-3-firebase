@@ -1,8 +1,12 @@
-ion-toolbar{
+.toolbar{
     --background: linear-gradient(#8BB8E8,  #ffffff);
+  }
 
-}
 
 ion-content{
     --background: linear-gradient(#8BB8E8,  #ffffff);
+}
+
+ion-title{
+  color: black;
 }
