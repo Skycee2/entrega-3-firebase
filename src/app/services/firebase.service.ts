@@ -45,7 +45,7 @@ export class FirebaseService {
   }
 
 
-  getSeccionUsuario<tipo>(id: string, tipoUser: string) {
+  getAsignaturaUsuario<tipo>(id: string, tipoUser: string) {
     const secciones = this.database.collection<tipo>('secciones', (ref) => {
         let query:
           | firebase.firestore.CollectionReference

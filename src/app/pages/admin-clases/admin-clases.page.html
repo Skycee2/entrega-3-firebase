@@ -32,7 +32,7 @@
         </ion-item>
 
         <ion-item>
-          <ion-select  placeholder="Seleccione alumno" formControlName="alumno" [value]="[alumnos_seleccionados]" [multiple]="true">
+          <ion-select  placeholder="Seleccione alumno" formControlName="alumno" [compareWith]="compareWith" [multiple]="true">
             <ion-select-option *ngFor="let a of alumnos" [value]="a">{{a.nom_completo}}</ion-select-option>
           </ion-select>
         </ion-item>
@@ -63,7 +63,6 @@
           </ion-card-content>
         </ion-card>
       </ion-list>
-
     </ion-card-content>
   </div>
 </ion-content>
