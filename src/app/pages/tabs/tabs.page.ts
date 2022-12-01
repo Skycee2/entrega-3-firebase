@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FirebaseApp } from '@angular/fire/app';
 import { Router } from '@angular/router';
-import { Seccion, SeccionHome, Usuario } from 'src/app/interfaces/models';
+import { Usuario } from 'src/app/interfaces/models';
 import { FirebaseService } from 'src/app/services/firebase.service';
 import { UsuarioService } from 'src/app/services/usuario.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -16,12 +16,8 @@ import { AlertController } from '@ionic/angular';
 })
 export class TabsPage implements OnInit {
   usuario: Usuario;
-
   idioma: string;
-
   profeTemp: Usuario;
-
-  secciones: SeccionHome[];
   langs: string[] = [];
 
   constructor(private alertController: AlertController, private router: Router, private database: FirebaseService, private translateService: TranslateService /* private usuarioService: UsuarioService */) {

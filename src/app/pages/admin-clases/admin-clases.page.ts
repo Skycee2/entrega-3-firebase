@@ -1,11 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { LoadingController } from '@ionic/angular';
-import { Usuario } from 'src/app/interfaces/models';
+import { AlumnoDetalle, Asignatura, Usuario } from 'src/app/interfaces/models';
 import { UsuarioService } from 'src/app/services/usuario.service';
 import { AlertController } from '@ionic/angular';
 import { FirebaseService } from 'src/app/services/firebase.service';
 import { Router } from '@angular/router';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { AngularFireAuth } from '@angular/fire/compat/auth';
+
 @Component({
   selector: 'app-admin-clases',
   templateUrl: './admin-clases.page.html',
@@ -13,63 +16,109 @@ import { Router } from '@angular/router';
 })
 export class AdminClasesPage implements OnInit {
 
-  /* //Asignatura predefinida
-  asigPredef: any;
-
-  //Tipos de asignatura
-  escuela: any[] = [{
-    escDuoc:'Administración y negocios'
-  },
-  {
-    escDuoc:'Comunicación'
-  },
-  {
-    escDuoc:'Construcción'
-  },
-  {
-    escDuoc:'Diseño'
-  },
-  {
-    escDuoc:'Gastronomía'
-  },
-  {
-    escDuoc:'Informática y telecomunicaciones'
-  },
-  {
-    escDuoc:'Ingenieria y recursos naturales'
-  },
-  {
-    escDuoc:'Salud'
-  },
-  {
-    escDuoc:'Turismo y hotelería'
-  },
-  {
-    escDuoc:'Formación cristiana'
-  },
-  ]; */
-  
-  //CRUD para crear una asignatura
-
-  asig = new FormGroup({
-    cod_asig: new FormControl('',[Validators.required, Validators.pattern('[1-9]{8}')]),
-    nom_asig: new FormControl('',[Validators.required, Validators.minLength(6)]),
-    sigla_asig: new FormControl('',[Validators.required, Validators.pattern('[A-Z]{1,3}[0-9]{1,5}')]), 
-    prof_asignatura: new FormControl('', [Validators.required]),
+  asignatura = new FormGroup({
+    id_asig: new FormControl(''),
+    sigla_asig: new FormControl('', [Validators.required, Validators.pattern('[A-Za-z]{1,5}[0-9]{4}')]),
+    nom_asig: new FormControl('', [Validators.required, Validators.minLength(6)]),
+    profe_asig: new FormControl('', [Validators.required]),
+    alumno: new FormControl([]),
   });
 
-  asignaturas: any[] = [];
-  /* KEY_ASIGNATURAS = 'asignaturas'; */
-  /* usuarios: Usuario; */
-  /* KEY_USUARIOS = 'usuarios'; */
+  asignaturas: Asignatura[] = [];
+  alumnos: AlumnoDetalle[] = [];
+  profesores: Usuario[] = [];
+  alumnos_seleccionados: [];
 
-  //Variables validaciones
-  valid_cod: string;
-  
-  constructor(private router: Router,private database: FirebaseService,private alertController: AlertController,/* private usuarioService: UsuarioService */ private loadingController: LoadingController) { }
 
-  ngOnInit() { 
+  constructor(private cargandoPantalla: LoadingController,private router: Router, private database: FirebaseService, private alertController: AlertController, private dbangular: AngularFirestore, private auth: AngularFireAuth,/* private usuarioService: UsuarioService */ private loadingController: LoadingController) { }
+
+  ngOnInit() {
+    this.cargarAsignaturas();
+    this.cargarProfesAlumnos();
   }
+
+  cargarAsignaturas() {
+    this.database.getCollection<Asignatura>('asignaturas').subscribe((res) => {
+      this.asignaturas = res;
+    });
+  }
+
+  cargarProfesAlumnos() {
+    this.database.getUsuarioTipo<Usuario>('profesor').subscribe(
+      (respuesta) => {
+        this.profesores = respuesta
+      }
+    )
+    this.database.getUsuarioTipo<Usuario>('alumno').subscribe(
+      (respuesta) => {
+        console.log(respuesta);
+        this.alumnos = respuesta
+        var alumnostemp = []
+        respuesta.forEach(element => {
+          var alumnotemp = {
+            id: '',
+            nom_completo: '',
+            rut: '',
+          };
+          alumnotemp.id = element.id;
+          alumnotemp.nom_completo = element.nom_completo;
+          alumnotemp.rut = element.rut;
+          alumnostemp.push(alumnotemp);
+        });
+        this.alumnos = alumnostemp;
+
+        console.log(this.alumnos)
+      }
+    )
+  }
+
+  registraAsig() {
+    console.log(this.asignatura.value);
+
+    if (this.asignatura.value.id_asig === '' || this.asignatura.value.id_asig === null) {
+      const idtemp = this.database.getId();
+      this.asignatura.value.id_asig = idtemp;
+      this.database.createDocumento(this.asignatura.value, 'asignaturas', idtemp).then((res) => {
+        console.log('asignatura ingresada con exito!!')
+      });
+    } else {
+      this.database.createDocumento(this.asignatura.value, 'asignaturas', this.asignatura.value.id_asig).then((res) => {
+        console.log('asignatira ingresada');
+      });
+    }
+  }
+
+
+  eliminarAsig(id: string) {
+    this.database.eliminarDocumento('asignaturas', id).then(
+      () => {
+
+      });
+  }
+
+
+  async buscarAsig(id: string) {
+    this.database.getDocumento<Asignatura>('asignaturas', id).subscribe((res) => {
+      this.asignatura.setValue(res);
+      this.alumnos_seleccionados = res.alumno;
+
+      /* this.alumnos = res.alumno; */
+      console.log(this.asignatura);
+
+    });
+  }
+
+  limpiarAsig() {
+    this.asignatura.reset();
+  }
+
+
+  eliminarAlumno(id_asig: string) {
+    this.database.eliminarAlumnoAsignatura(this.asignatura.value.id_asig, id_asig)
+  }
+  //////////////////////////////////////////////
+
+
 
   async presentAlert() {
     const alert = await this.alertController.create({
@@ -85,24 +134,23 @@ export class AdminClasesPage implements OnInit {
           text: 'Si',
           cssClass: 'alert-button-confirm',
           handler: () => {
-            this.logout()  ;
+            this.logout();
           },
         }
       ],
     });
 
     await alert.present();
-
   }
 
-  logout(){
+  logout() {
     this.database.logout();
     this.router.navigateByUrl('/login')
   }
   /* async ngOnInit() {
     await this.cargarAsignaturas();
     await this.asignarProfesor();
-
+ 
     this.asigPredef = {
       cod_asig: '15483569',
       nom_asig: 'Programación de algoritmos cuánticos',
@@ -110,55 +158,55 @@ export class AdminClasesPage implements OnInit {
       prof_asignatura: 'Rick Sánchez',
       clasif_esc: 'Informática y telecomunicaciones'
     };
-
+ 
     await this.usuarioService.agregarAsignatura(this.KEY_ASIGNATURAS, this.asigPredef);
   }
-
+ 
   //Método para poder usar storage
   async cargarAsignaturas(){
     this.asignaturas = await this.usuarioService.obtenerAsignaturas(this.KEY_ASIGNATURAS);
   }
-
+ 
   //Método para traer ususarios de tipo profesor
   async asignarProfesor(){
     this.usuarios = await this.usuarioService.obtenerProfesores(this.KEY_USUARIOS);
   }
-
+ 
   //Método registrar asignatura
   async registrarAsignatura(){
     //verificar registro
-    var resp = await this.usuarioService.agregarAsignatura(this.KEY_ASIGNATURAS, this.asig.value);
+    var resp = await this.usuarioService.agregarAsignatura(this.KEY_ASIGNATURAS, this.asignatura.value);
     if(resp){
       this.cargarAsignaturas();
     }
     alert('Asignatura registrada.');
-    this.asig.reset();
+    this.asignatura.reset();
   }
-
+ 
   //Método eliminar asignatura
   async eliminarAsignatura(cod_asig){
     await this.usuarioService.eliminarAsig(this.KEY_ASIGNATURAS, cod_asig);
     await this.cargandoPantalla('Eliminando...')
     await this.cargarAsignaturas();
   }
-
+ 
   //Método para buscar una asignatura
   async buscarAsignatura(cod_asig){
     var buscarAsig = await this.usuarioService.obtenerAsignatura(this.KEY_ASIGNATURAS, cod_asig);
-    this.asig.setValue(buscarAsig);
+    this.asignatura.setValue(buscarAsig);
   }
-
+ 
   //Método para modificar asignatura
   async modificarAsig(){
     this.usuarioService.modificarAsignatura(this.KEY_ASIGNATURAS, this.asignaturas);
     await this.cargarAsignaturas();
   }
-
+ 
   //Método para limpiar campos
   limpiarAsig(){
-    this.asig.reset();
+    this.asignatura.reset();
   }
-
+ 
   //Método para mostrar "cargando pantalla"
   async cargandoPantalla(message){
     const cargando = await this.loadingController.create({
@@ -166,8 +214,9 @@ export class AdminClasesPage implements OnInit {
       duration: 3000,
       spinner: 'lines-small'
     });
-
+ 
     cargando.present();
   } */
+
 
 }

@@ -6,6 +6,7 @@ import { ValidacionesService } from 'src/app/services/validaciones.service';
 import { AlertController } from '@ionic/angular';
 import { FirebaseService } from 'src/app/services/firebase.service';
 import { Router } from '@angular/router';
+import { Usuario } from 'src/app/interfaces/models';
 
 @Component({
   selector: 'app-administrador',
@@ -32,7 +33,7 @@ export class AdministradorPage implements OnInit {
     correo: new FormControl('', [Validators.required, Validators.pattern('[A-Za-z]{1,4}.[A-Za-z]{1,20}@duocuc.cl|[A-Za-z]{1,4}.[A-Za-z]{1,20}@duoc.cl|[A-Za-z]{1,4}.[A-Za-z]{1,20}@profesor.duoc.cl')]),
     fecha_nac: new FormControl('', Validators.required),
     semestre: new FormControl('', [Validators.required, Validators.min(1)]),
-    password: new FormControl('', [Validators.required, Validators.minLength(6)]),
+    contrasena: new FormControl('', [Validators.required, Validators.minLength(6)]),
     tipo_usuario: new FormControl('this.tipoUsuario', [])
   });
 
@@ -44,14 +45,14 @@ export class AdministradorPage implements OnInit {
   /* KEY_USUARIOS = 'usuarios'; */
 
 
-  constructor(private router: Router,private database: FirebaseService,private alertController: AlertController,/* private usuarioService: UsuarioService */ private validacionesService: ValidacionesService, private loadingController: LoadingController) { }
+  constructor( private validaciones: ValidacionesService,private router: Router,private database: FirebaseService,private alertController: AlertController,/* private usuarioService: UsuarioService */ private validacionesService: ValidacionesService, private loadingController: LoadingController) { }
 
   ngOnInit(){
     this.listar();
   }
 
   agregar(){
-    this.database.agregar('usuarios', this.usuario.value);
+    this.database.agregarAsig('usuarios', this.usuario.value);
     this.usuario.reset();
   }
 
@@ -68,6 +69,7 @@ export class AdministradorPage implements OnInit {
       }
     );
   }
+
 
   eliminar(id){
     this.database.eliminar('usuarios', id);
@@ -111,6 +113,8 @@ export class AdministradorPage implements OnInit {
 
     await alert.present();
   }
+
+
 
 /*    async eliminarAlert() {
     const alert = await this.alertController.create({

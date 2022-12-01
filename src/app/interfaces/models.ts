@@ -1,20 +1,19 @@
-export interface Seccion {
-    id: string;
+export interface Asignatura{
+    id_asig: string;
+    sigla_asig:string;
+    nom_asig: string;
+    profe_asig:string;
     alumno : [];
-    codigo:string;
-    nombre: string;
-    profesor:string;
-    sigla:string;
 }
 
-export interface  Clase{
+export interface Clase{
     id: string;
     alumnos : [];
     fecha: string;
     numero: number;
 }
 
-export interface SeccionHome {
+/* export interface SeccionHome {
     id: string;
     alumno : any;
     codigo:string;
@@ -25,13 +24,17 @@ export interface SeccionHome {
     };
     num_alumnos: number;
     sigla:string;
-}
+} */
 
 export interface AlumnoDetalle {
     id: string;
     nom_completo: string;
     rut: string;
   };
+
+
+
+
 
   export interface AlumnoClase {
     asistencia:string

@@ -9,6 +9,7 @@ import firebase from 'firebase/compat/app';
 })
 export class FirebaseService {
 
+  loading: any;
   constructor(private database: AngularFirestore, private auth: AngularFireAuth) {}
 
 
@@ -77,7 +78,7 @@ export class FirebaseService {
     return collection.doc(id).collection<tipo>(subPath).valueChanges();
   }
 
-  addAlumnoSeccion(id: string, alumno: string) {
+  agregarAlumnoAsignatura(id: string, alumno: string) {
     this.database
       .collection('secciones')
       .doc(id)
@@ -86,7 +87,7 @@ export class FirebaseService {
       });
   }
   
-  deleteAlumnoSeccion(id: string, alumno: string) {
+  eliminarAlumnoAsignatura(id: string, alumno: string) {
     this.database
       .collection('secciones')
       .doc(id)
@@ -123,7 +124,7 @@ export class FirebaseService {
   }
 
   //crud administrador
-  agregar(coleccion, value){
+  agregarAsig(coleccion, value){
     try {
       this.database.collection(coleccion).add(value);
       //this.fire.collection(coleccion).doc(id).set(value);
@@ -163,6 +164,28 @@ export class FirebaseService {
       console.error(error);
     }
   }
+
+///
+  getUsuarioTipo<tipo>(tipoUsuario: string) {
+    const usuarios = this.database.collection<tipo>('usuarios', (ref) => {
+        let query:
+          | firebase.firestore.CollectionReference
+          | firebase.firestore.Query = ref;
+          query = query.where('tipo', '==', tipoUsuario);
+        return query;
+      }).valueChanges();
+      return usuarios;
+  }
+
+  ////////////////////////////////////////
+
+  async cambiarClave(correo:string){
+    const aux = await this.auth.sendPasswordResetEmail(correo);
+    return aux
+  }
+    
+
+
 
   
   

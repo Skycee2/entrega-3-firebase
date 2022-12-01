@@ -25,23 +25,30 @@ export class LoginPage implements OnInit {
     contrasena: new FormControl('', [Validators.required, Validators.minLength(6), Validators.maxLength(18)]),
   });
 
+  loading:any;
+
   constructor(private cargandoPantalla: LoadingController, private database: FirebaseService , private alertController: AlertController, private router: Router) { }
 
   ngOnInit() {
   }
 
     login() {
+    this.showLoading('cargando...');
     this.database.login(this.usuario.value.correo, this.usuario.value.contrasena).then(
       (res) => {
-        this.loadingPantalla('cargando...');
-        this.presentAlert('Ingresaste correctamente!')
+        this.usuario.reset();
+        this.cerrarCargando();
         this.router.navigateByUrl('/tabs')
+        this.presentAlert('Ingresaste correctamente!')
       },(error)=>{
+        this.cerrarCargando();
         this.presentAlert('Contraseña o usuario incorrecto!')
+
       }
     )
-    
-  } 
+
+  }
+
   async presentAlert(mensaje:string) {
     const alert = await this.alertController.create({
       header: mensaje,
@@ -51,25 +58,20 @@ export class LoginPage implements OnInit {
 
     await alert.present();
   }
-
-  async loadingPantalla(message){
-    const cargando = await this.cargandoPantalla.create({
-      message,
-      duration: 500,
-      spinner: 'lines-small'
+  async showLoading(mensaje:string) {
+    this.loading = await this.cargandoPantalla.create({
+      message: mensaje,
     });
-    cargando.present();
+
+    await  this.loading.present();
+  }
+
+  async cerrarCargando() {
+    await this.loading.dismiss();
   }
 
 
 
-  
-
-
-  //Función para botón
-  btnInicio = function () {
-    this.router.navigate(['/login']);
-  }
 
 }
 

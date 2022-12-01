@@ -72,7 +72,7 @@ export class RegistrarPage implements OnInit {
         }
         this.database.createDocumento(usuarioTemp, 'usuarios', res.uid).then(
           (res) => {
-
+            this.usuario.reset();
             this.presentAlert('Resgistrado correctamente!')
             this.router.navigateByUrl('/login')
           }
@@ -81,6 +81,8 @@ export class RegistrarPage implements OnInit {
     )
 
   }
+
+
   obtenerDominio(correo: string) {
     const index = correo.lastIndexOf('@');
     return correo.slice(index + 1, correo.length)
